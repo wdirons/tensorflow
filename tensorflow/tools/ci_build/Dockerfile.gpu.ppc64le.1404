@@ -41,10 +41,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 #From https://gitlab.com/nvidia/cuda-ppc64le/blob/ubuntu16.04/9.2/devel/Dockerfile
+#Hacked because OSU's slow network connection to the internet
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        cuda-libraries-dev-$CUDA_PKG_VERSION \
-        cuda-nvml-dev-$CUDA_PKG_VERSION \
-        cuda-minimal-build-$CUDA_PKG_VERSION \
+        cuda-libraries-dev-$CUDA_PKG_VERSION && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        cuda-nvml-dev-$CUDA_PKG_VERSION && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        cuda-minimal-build-$CUDA_PKG_VERSION && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
         cuda-command-line-tools-$CUDA_PKG_VERSION && \
     rm -rf /var/lib/apt/lists/*
 
