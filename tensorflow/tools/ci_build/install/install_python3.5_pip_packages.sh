@@ -69,7 +69,7 @@ pip3.5 install scipy==0.18.1
 pip3.5 install scikit-learn==0.19.1
 
 # pandas required by `inflow`
-pip3 install pandas==0.19.2
+pip3.5 install pandas==0.19.2
 
 # Install recent-enough version of wheel for Python 3.5 wheel builds
 pip3.5 install wheel==0.29.0
