@@ -20,12 +20,6 @@
 
 # LINT.IfChange
 
-# fkrull/deadsnakes is for Python3.6
-add-apt-repository -y ppa:fkrull/deadsnakes
-
-apt-get update
-apt-get upgrade
-
 # Install python dep
 apt-get install python-dev
 # Install bz2 dep
@@ -50,23 +44,10 @@ make altinstall
 
 pip3.6 install --upgrade pip
 
-# Install last working version of setuptools. This must happen before we install
-# absl-py, which uses install_requires notation introduced in setuptools 20.5.
+pip3.6 install wheel==0.31.1
 pip3.6 install --upgrade setuptools==39.1.0
 
-pip3.6 install --upgrade virtualenv
-
 set -e
-
-# Install six.
-pip3.6 install --upgrade absl-py
-pip3.6 install --upgrade six==1.10.0
-
-# Install protobuf.
-pip3.6 install --upgrade protobuf==3.6.0
-
-# Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf /usr/lib/python3/dist-packages/six*
 
 # Install numpy, scipy and scikit-learn required by the builds
 
@@ -75,38 +56,6 @@ rm -rf /usr/lib/python3/dist-packages/six*
 # This workaround isn't needed for Ubuntu 16.04 or later.
 pip3.6 install --no-binary=:all: --upgrade numpy==1.14.5
 
-pip3.6 install scipy==0.18.1
-
-pip3.6 install scikit-learn==0.19.1
-
-# pandas required by `inflow`
-pip3.6 install pandas==0.19.2
-
-pip3.6 install gnureadline
-
-pip3.6 install bz2file
-
-# Install recent-enough version of wheel for Python 3.6 wheel builds
-pip3.6 install wheel==0.29.0
-
-pip3.6 install portpicker
-
-pip3.6 install werkzeug
-
-pip3.6 install grpcio
-
-# Eager-to-graph execution needs astor, gast and termcolor:
-pip3.6 install --upgrade astor
-pip3.6 install --upgrade gast
-pip3.6 install --upgrade termcolor
-
-pip3.6 install --upgrade h5py==2.8.0
-
-# Keras
+pip3.6 install cython
 pip3.6 install keras_applications==1.0.6
 pip3.6 install keras_preprocessing==1.0.5
-
-# Estimator
-pip3.6 install tensorflow-estimator==1.13.0 --no-deps
-
-# LINT.ThenChange(//tensorflow/tools/ci_build/install/install_python3.5_pip_packages.sh)
