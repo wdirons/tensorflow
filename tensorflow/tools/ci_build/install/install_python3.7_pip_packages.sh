@@ -80,4 +80,4 @@ pip3.7 install keras_applications==1.0.6
 pip3.7 install keras_preprocessing==1.0.5
 
 # Estimator
-pip3.7 install tf-estimator-nightly==1.13.0 --no-deps
+pip3.7 install tensorflow-estimator==1.13.0 --no-deps

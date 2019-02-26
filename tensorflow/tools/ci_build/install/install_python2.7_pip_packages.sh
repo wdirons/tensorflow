@@ -101,4 +101,4 @@ pip2 install keras_preprocessing==1.0.5 --no-deps
 pip2 install --upgrade h5py==2.8.0
 
 # Estimator
-pip2 install tensorflow_estimator==1.13.0 --no-deps
+pip2 install tensorflow-estimator==1.13.0 --no-deps

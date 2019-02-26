@@ -107,6 +107,6 @@ pip3.6 install keras_applications==1.0.6
 pip3.6 install keras_preprocessing==1.0.5
 
 # Estimator
-pip3.6 install tf-estimator-nightly==1.13.0 --no-deps
+pip3.6 install tensorflow-estimator==1.13.0 --no-deps
 
 # LINT.ThenChange(//tensorflow/tools/ci_build/install/install_python3.5_pip_packages.sh)
