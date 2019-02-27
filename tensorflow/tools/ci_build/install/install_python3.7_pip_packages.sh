@@ -17,10 +17,21 @@
 set -e
 
 # Install Python 3.7 and dev library
+
+wget https://www.openssl.org/source/openssl-1.1.1b.tar.gz
+tar xzf openssl-1.1.1b.tar.gz
+cd openssl-1.1.1b
+./config shared --prefix=/usr/local/
+make
+make install
+
+apt-get install libffi-dev
 wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz
 tar xvf Python-3.7.2.tar.xz
 cd Python-3.7.2
-
+export LDFLAGS="-L/usr/local/lib/"
+export LD_LIBRARY_PATH="/usr/local/lib/"
+export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl"
 ./configure
 make altinstall
 
