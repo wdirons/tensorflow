@@ -80,7 +80,7 @@ fi
 
 # Use nvidia-docker if the container is GPU.
 if [[ "${CONTAINER_TYPE}" == gpu* ]]; then
-  DOCKER_BINARY="nvidia-docker"
+  DOCKER_BINARY="docker"
 else
   DOCKER_BINARY="docker"
 fi
