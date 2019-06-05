@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright 2018 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2015 The TensorFlow Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,16 +14,23 @@
 # limitations under the License.
 # ==============================================================================
 
-OPENBLAS_SRC_PATH=/tmp/openblas_src/
-POWER="POWER8"
-USE_OPENMP="USE_OPENMP=1"
-OPENBLAS_INSTALL_PATH="/usr"
-apt-get update
-apt-get install -y gfortran gfortran-4.8
-rm -rf ${OPENBLAS_SRC_PATH}
-git clone -b v0.3.5 https://github.com/xianyi/OpenBLAS ${OPENBLAS_SRC_PATH}
-cd ${OPENBLAS_SRC_PATH}
-# Pick up fix for OpenBLAS issue 1571
-#git cherry-pick -X theirs 961d25e9c7e4a1758adb1dbeaa15187de69dd052
-make TARGET=${POWER} ${USE_OPENMP} FC=gfortran
-make PREFIX=${OPENBLAS_INSTALL_PATH} install
+# Select bazel version.
+BAZEL_VERSION="0.24.1"
+
+set +e
+local_bazel_ver=$(bazel version 2>&1 | grep -i label | awk '{print $3}')
+
+if [[ "$local_bazel_ver" == "$BAZEL_VERSION" ]]; then
+  exit 0
+fi
+
+set -e
+
+# Install bazel.
+mkdir -p /bazel
+cd /bazel
+if [[ ! -f "bazel_bin_ppc64le_$BAZEL_VERSION" ]]; then
+  curl -fSsL -O https://oplab9.parqtec.unicamp.br/pub/ppc64el/bazel/ubuntu_14.04/bazel_bin_ppc64le_$BAZEL_VERSION
+fi
+chmod +x /bazel/bazel_bin_ppc64le_*
+mv /bazel/bazel_bin_ppc64le_$BAZEL_VERSION /usr/local/bin
