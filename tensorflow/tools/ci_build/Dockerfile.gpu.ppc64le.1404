@@ -65,7 +65,7 @@ RUN /install/install_python2.7_pip_packages.sh
 RUN /install/install_python3.5_pip_packages.sh
 RUN /install/install_python3.6_pip_packages.sh
 RUN /install/install_python3.7_pip_packages.sh
-RUN /install/install_bazel_ppc64le.sh
+RUN /install/install_bazel_from_source.sh
 
 # Set up the master bazelrc configuration file.
 COPY install/.bazelrc /etc/bazel.bazelrc

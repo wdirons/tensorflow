@@ -33,4 +33,4 @@ if [[ ! -f "bazel_bin_ppc64le_$BAZEL_VERSION" ]]; then
   curl -fSsL -O https://oplab9.parqtec.unicamp.br/pub/ppc64el/bazel/ubuntu_14.04/bazel_bin_ppc64le_$BAZEL_VERSION
 fi
 chmod +x /bazel/bazel_bin_ppc64le_*
-mv /bazel/bazel_bin_ppc64le_$BAZEL_VERSION /usr/local/bin
+mv /bazel/bazel_bin_ppc64le_$BAZEL_VERSION /usr/local/bin/bazel
