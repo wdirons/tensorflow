@@ -44,6 +44,8 @@ fi
 
 pip2 install mock
 pip2 install cython
+pip2 install enum34
+pip2 install future
 
 pip2 install keras_applications==1.0.6 --no-deps
 pip2 install keras_preprocessing==1.0.5 --no-deps
