@@ -46,12 +46,12 @@ wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/glibc/libc6-dev_2.19-10u
     rm -rf "libc6-dev_2.19-10ubuntu2.3_ppc64el.deb" "libc6-dev_2.19-10ubuntu2.3_ppc64el"
 
 # Put the current kernel headers from ubuntu in place.
-ln -s "/usr/include/linux" "/${TARGET}/usr/include/linux"
-ln -s "/usr/include/asm-generic" "/${TARGET}/usr/include/asm-generic"
-ln -s "/usr/include/powerpc64le-linux-gnu/asm" "/${TARGET}/usr/include/asm"
+ln -s "/usr/include/linux" "${TARGET}/usr/include/linux"
+ln -s "/usr/include/asm-generic" "${TARGET}/usr/include/asm-generic"
+ln -s "/usr/include/powerpc64le-linux-gnu/asm" "${TARGET}/usr/include/asm"
 
 # Symlinks in the binary distribution are set up for installation in /usr, we
-# need to fix up all the links to stay within /${TARGET}.
+# need to fix up all the links to stay within ${TARGET}.
 /fixlinks.sh "${TARGET}"
 
 # Patch to allow non-glibc 2.12 compatible builds to work.
@@ -62,7 +62,7 @@ sed -i '54i#define TCP_USER_TIMEOUT 18' "${TARGET}/usr/include/netinet/tcp.h"
 # libstdc++ provided by devtoolset.
 wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/gcc-4.9/libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" && \
     unar "libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" && \
-    tar -C "/${TARGET}" -xvf "libstdc++6_4.9.1-16ubuntu6_ppc64el/data.tar.xz" "./usr/lib/powerpc64le-linux-gnu/libstdc++.so.6.0.20" && \
+    tar -C "${TARGET}" -xvf "libstdc++6_4.9.1-16ubuntu6_ppc64el/data.tar.xz" "./usr/lib/powerpc64le-linux-gnu/libstdc++.so.6.0.20" && \
     rm -rf "libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" "libstdc++6_4.9.1-16ubuntu6_ppc64el"
 
 mkdir -p "${TARGET}-src"
@@ -92,8 +92,8 @@ mkdir -p "${TARGET}-build"
 cd "${TARGET}-build"
 
 "${TARGET}-src/configure" \
-      --prefix=/"${TARGET}/usr" \
-      --with-sysroot="/${TARGET}" \
+      --prefix="${TARGET}/usr" \
+      --with-sysroot="${TARGET}" \
       --disable-bootstrap \
       --disable-libmpx \
       --disable-libsanitizer \
@@ -120,17 +120,17 @@ cd "${TARGET}-build"
 # Create the devtoolset libstdc++ linkerscript that links dynamically against
 # the system libstdc++ 4.4 and provides all other symbols statically.
 # Run the command 'objdump -i' to find the correct OUTPUT_FORMAT for an architecture
-mv "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}" \
-   "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}.backup"
+mv "${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}" \
+   "${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}.backup"
 echo -e "OUTPUT_FORMAT(elf64-powerpcle)\nINPUT ( libstdc++.so.6.0.20 -lstdc++_nonshared44 )" \
-   > "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}"
+   > "${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}"
 cp "./powerpc64le-unknown-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared44.a" \
-   "/${TARGET}/usr/lib64"
+   "${TARGET}/usr/lib64"
 
 # Link in architecture specific includes from the system; note that we cannot
 # link in the whole x86_64-linux-gnu folder, as otherwise we're overlaying
 # system gcc paths that we do not want to find.
 # TODO(klimek): Automate linking in all non-gcc / non-kernel include
 # directories.
-mkdir -p "/${TARGET}/usr/include/powerpc64le-linux-gnu"
-ln -s "/usr/include/powerpc64le-linux-gnu/python3.5m" "/${TARGET}/usr/include/powerpc64le-linux-gnu/python3.5m"
+mkdir -p "${TARGET}/usr/include/powerpc64le-linux-gnu"
+ln -s "/usr/include/powerpc64le-linux-gnu/python3.5m" "${TARGET}/usr/include/powerpc64le-linux-gnu/python3.5m"
