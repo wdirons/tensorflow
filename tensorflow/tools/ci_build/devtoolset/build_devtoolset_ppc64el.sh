@@ -119,9 +119,10 @@ cd "${TARGET}-build"
 
 # Create the devtoolset libstdc++ linkerscript that links dynamically against
 # the system libstdc++ 4.4 and provides all other symbols statically.
+# Run the command 'objdump -i' to find the correct OUTPUT_FORMAT for an architecture
 mv "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}" \
    "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}.backup"
-echo -e "OUTPUT_FORMAT(elf64-pp64el)\nINPUT ( libstdc++.so.6.0.21 -lstdc++_nonshared44 )" \
+echo -e "OUTPUT_FORMAT(elf64-powerpcle)\nINPUT ( libstdc++.so.6.0.20 -lstdc++_nonshared44 )" \
    > "/${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}"
 cp "./powerpc64le-unknown-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared44.a" \
    "/${TARGET}/usr/lib64"
