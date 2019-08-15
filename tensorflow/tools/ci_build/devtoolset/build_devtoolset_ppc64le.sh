@@ -14,9 +14,9 @@
 # limitations under the License.
 # ==============================================================================
 #
-# Builds a devtoolset cross-compiler targeting manylinux 2010 (glibc 2.12 /
-# libstdc++ 4.4).
-# On ppc64el glibc is version 2.19
+# Builds a devtoolset cross-compiler targeting manylinux 2014 (glibc 2.17)
+# On ppc64le glibc is version 2.19, that is the earlier ubuntu version for ppc64le
+# Based on the script: build_devtoolset.sh 
 
 VERSION="$1"
 TARGET="$2"
@@ -35,7 +35,7 @@ devtoolset-8)
 esac
 
 mkdir -p "${TARGET}"
-# Download binary glibc 2.12 release.
+# Download binary glibc 2.19 release.
 wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/glibc/libc6_2.19-10ubuntu2.3_ppc64el.deb" && \
     unar "libc6_2.19-10ubuntu2.3_ppc64el.deb" && \
     tar -C "${TARGET}" -xvzf "libc6_2.19-10ubuntu2.3_ppc64el/data.tar.gz" && \
@@ -54,10 +54,10 @@ ln -s "/usr/include/powerpc64le-linux-gnu/asm" "${TARGET}/usr/include/asm"
 # need to fix up all the links to stay within ${TARGET}.
 /fixlinks.sh "${TARGET}"
 
-# Patch to allow non-glibc 2.12 compatible builds to work.
+# Patch to allow non-glibc 2.19 compatible builds to work.
 sed -i '54i#define TCP_USER_TIMEOUT 18' "${TARGET}/usr/include/netinet/tcp.h"
 
-# Download binary libstdc++ 4.4 release we are going to link against.
+# Download binary libstdc++ 4.9 release we are going to link against.
 # We only need the shared library, as we're going to develop against the
 # libstdc++ provided by devtoolset.
 wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/gcc-4.9/libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" && \
@@ -68,7 +68,7 @@ wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/gcc-4.9/libstdc++6_4.9.1
 mkdir -p "${TARGET}-src"
 cd "${TARGET}-src"
 
-# Build a devtoolset cross-compiler based on our glibc 2.12 sysroot setup.
+# Build a devtoolset cross-compiler based on our glibc 2.19 sysroot setup.
 
 case "${VERSION}" in
 devtoolset-7)
@@ -113,6 +113,7 @@ cd "${TARGET}-build"
       --with-default-libstdcxx-abi="gcc4-compatible" \
       --with-gcc-major-version-only \
       --with-linker-hash-style="gnu" \
+      --with-tune="power8" \
       && \
     make -j 42 && \
     make install
@@ -128,7 +129,7 @@ cp "./powerpc64le-unknown-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared44
    "${TARGET}/usr/lib64"
 
 # Link in architecture specific includes from the system; note that we cannot
-# link in the whole x86_64-linux-gnu folder, as otherwise we're overlaying
+# link in the whole powerpc64le-linux-gnu folder, as otherwise we're overlaying
 # system gcc paths that we do not want to find.
 # TODO(klimek): Automate linking in all non-gcc / non-kernel include
 # directories.

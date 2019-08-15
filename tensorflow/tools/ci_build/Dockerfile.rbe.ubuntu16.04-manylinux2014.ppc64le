@@ -1,14 +1,14 @@
-# Dockerfile to build a manylinux 2010 compliant cross-compiler.
+# Dockerfile to build a manylinux 2014 compliant compiler for ppc64le.
+# Based on Dockerfile.rbe.ubuntu16.04-manylinux2010
 #
-# Builds a devtoolset gcc/libstdc++ that targets manylinux 2010 compatible
-# glibc (2.12) and system libstdc++ (4.4).
+# Builds a devtoolset gcc/libstdc++ that targets manylinux 2014 compatible
+# glibc (2.17) and system libstdc++ (4.4).
 #
 # To push a new version, run:
-# $ docker build -f Dockerfile.rbe.ubuntu16.04-manylinux2010.ppc64le
-#  --tag "gcr.io/tensorflow-testing/nosla-ubuntu16.04-manylinux2010.ppc64le" .
-# $ docker push gcr.io/tensorflow-testing/nosla-ubuntu16.04-manylinux2010
+# $ docker build -f Dockerfile.rbe.ubuntu16.04-manylinux2014.ppc64le
+#  --tag "ibmcom/tensorflow-ppc64le/devel-ubuntu16.04-manylinux2014" .
+# $ docker push ibmcom/tensorflow-ppc64le/devel-ubuntu16.04-manylinux2014
 
-#FROM ubuntu:16.04 as devtoolset
 FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,18 +29,13 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 ADD devtoolset/fixlinks.sh fixlinks.sh
-ADD devtoolset/build_devtoolset_ppc64el.sh build_devtoolset.sh
+ADD devtoolset/build_devtoolset_ppc64le.sh build_devtoolset.sh
 ADD devtoolset/rpm-patch.sh rpm-patch.sh
 
-# Set up a sysroot for glibc 2.12 / libstdc++ 4.4 / devtoolset-7 in /dt7.
+# Set up a sysroot for glibc 2.19 / libstdc++ 4.4 / devtoolset-7 in /dt7.
 RUN /build_devtoolset.sh devtoolset-7 /dt7
-# Set up a sysroot for glibc 2.12 / libstdc++ 4.4 / devtoolset-8 in /dt8.
+# Set up a sysroot for glibc 2.19 / libstdc++ 4.4 / devtoolset-8 in /dt8.
 RUN /build_devtoolset.sh devtoolset-8 /dt8
-
-# TODO(klimek): Split up into two different docker images.
-#FROM ubuntu:16.04
-#COPY --from=devtoolset /dt7 /dt7
-#COPY --from=devtoolset /dt8 /dt8
 
 # Copy and run the install scripts.
 COPY install/*.sh /install/
@@ -49,7 +44,7 @@ RUN /install/install_bootstrap_deb_packages.sh
 RUN /install/install_deb_packages.sh
 RUN /install/install_openblas_ppc64le.sh
 RUN /install/install_hdf5_ppc64le.sh
-#RUN /install/install_clang.sh
+#RUN /install/install_clang.sh #no apt repo for clang on ppc64le
 RUN /install/install_bazel_from_source.sh
 
 # Install golang.
