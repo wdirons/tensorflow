@@ -14,7 +14,8 @@
 # limitations under the License.
 # ==============================================================================
 #
-# Builds a devtoolset cross-compiler targeting manylinux 2014 (glibc 2.17)
+# Builds a devtoolset cross-compiler targeting manylinux 2014 (glibc 2.17 /
+# libstdc++ 4.8).
 # On ppc64le glibc is version 2.19, that is the earlier ubuntu version for ppc64le
 # Based on the script: build_devtoolset.sh 
 
@@ -57,13 +58,13 @@ ln -s "/usr/include/powerpc64le-linux-gnu/asm" "${TARGET}/usr/include/asm"
 # Patch to allow non-glibc 2.19 compatible builds to work.
 sed -i '54i#define TCP_USER_TIMEOUT 18' "${TARGET}/usr/include/netinet/tcp.h"
 
-# Download binary libstdc++ 4.9 release we are going to link against.
+# Download binary libstdc++ 4.8 release we are going to link against.
 # We only need the shared library, as we're going to develop against the
 # libstdc++ provided by devtoolset.
-wget "http://old-releases.ubuntu.com/ubuntu/pool/main/g/gcc-4.9/libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" && \
-    unar "libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" && \
-    tar -C "${TARGET}" -xvf "libstdc++6_4.9.1-16ubuntu6_ppc64el/data.tar.xz" "./usr/lib/powerpc64le-linux-gnu/libstdc++.so.6.0.20" && \
-    rm -rf "libstdc++6_4.9.1-16ubuntu6_ppc64el.deb" "libstdc++6_4.9.1-16ubuntu6_ppc64el"
+wget "http://ports.ubuntu.com/ubuntu-ports/pool/main/g/gcc-4.8/libstdc++6_4.8.4-2ubuntu1~14.04.4_ppc64el.deb" && \
+    unar "libstdc++6_4.8.4-2ubuntu1~14.04.4_ppc64el.deb" && \
+    tar -C "${TARGET}" -xvf "libstdc++6_4.8.4-2ubuntu1~14.04.4_ppc64el/data.tar.xz" "./usr/lib/powerpc64le-linux-gnu/libstdc++.so.6.0.19" && \
+    rm -rf "libstdc++6_4.8.4-2ubuntu1~14.04.4_ppc64el.deb" "llibstdc++6_4.8.4-2ubuntu1~14.04.4_ppc64el"
 
 mkdir -p "${TARGET}-src"
 cd "${TARGET}-src"
@@ -123,7 +124,7 @@ cd "${TARGET}-build"
 # Run the command 'objdump -i' to find the correct OUTPUT_FORMAT for an architecture
 mv "${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}" \
    "${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}.backup"
-echo -e "OUTPUT_FORMAT(elf64-powerpcle)\nINPUT ( libstdc++.so.6.0.20 -lstdc++_nonshared44 )" \
+echo -e "OUTPUT_FORMAT(elf64-powerpcle)\nINPUT ( libstdc++.so.6.0.19 -lstdc++_nonshared44 )" \
    > "${TARGET}/usr/lib64/libstdc++.so.${LIBSTDCXX_VERSION}"
 cp "./powerpc64le-unknown-linux-gnu/libstdc++-v3/src/.libs/libstdc++_nonshared44.a" \
    "${TARGET}/usr/lib64"

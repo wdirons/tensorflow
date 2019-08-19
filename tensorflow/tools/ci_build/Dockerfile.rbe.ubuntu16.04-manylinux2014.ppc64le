@@ -2,7 +2,7 @@
 # Based on Dockerfile.rbe.ubuntu16.04-manylinux2010
 #
 # Builds a devtoolset gcc/libstdc++ that targets manylinux 2014 compatible
-# glibc (2.17) and system libstdc++ (4.4).
+# glibc (2.17) and system libstdc++ (4.8).
 #
 # To push a new version, run:
 # $ docker build -f Dockerfile.rbe.ubuntu16.04-manylinux2014.ppc64le
@@ -32,9 +32,9 @@ ADD devtoolset/fixlinks.sh fixlinks.sh
 ADD devtoolset/build_devtoolset_ppc64le.sh build_devtoolset.sh
 ADD devtoolset/rpm-patch.sh rpm-patch.sh
 
-# Set up a sysroot for glibc 2.19 / libstdc++ 4.4 / devtoolset-7 in /dt7.
+# Set up a sysroot for glibc 2.19 / libstdc++ 4.8 / devtoolset-7 in /dt7.
 RUN /build_devtoolset.sh devtoolset-7 /dt7
-# Set up a sysroot for glibc 2.19 / libstdc++ 4.4 / devtoolset-8 in /dt8.
+# Set up a sysroot for glibc 2.19 / libstdc++ 4.8 / devtoolset-8 in /dt8.
 RUN /build_devtoolset.sh devtoolset-8 /dt8
 
 # Copy and run the install scripts.
@@ -53,18 +53,20 @@ env GOROOT=/usr/local/go
 env PATH=$GOROOT/bin:$PATH
 
 # Install python 3.6.
+# Replace easy_install3 (3.5) with easy_install-3.6 because in the next
+#   step that is used to install pip
 RUN apt-get update && apt-get install -y zlib1g-dev && \
-    wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tar.xz && \
-    tar xvf Python-3.6.1.tar.xz && \
-    cd Python-3.6.1 && \
-    ./configure && \
+    wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz && \
+    tar xvf Python-3.6.8.tar.xz && \
+    cd Python-3.6.8 && \
+    ./configure --enable-optimizations && \
     make altinstall && \
     cd .. && \
-    rm -rf Python-3.6.1 Python-3.6.1.tar.xz && \
-    pip3.6 install --upgrade pip && \
+    rm -rf Python-3.6.8 Python-3.6.8.tar.xz && \
     update-alternatives --install /usr/local/bin/python3 python3 /usr/local/bin/python3.6 0 && \
-    update-alternatives --install /usr/local/bin/pip3 pip3 /usr/local/bin/pip3.6 0
-    
+    rm -f /usr/bin/easy_install3 && \
+    update-alternatives --install /usr/bin/easy_install3 easy_install3 /usr/local/bin/easy_install-3.6 0
+
 RUN /install/install_pip_packages.sh
 
 # TODO(klimek): Figure out a better way to get the right include paths
