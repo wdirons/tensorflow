@@ -27,6 +27,11 @@ if [[ "$1" != "" ]] && [[ "$1" != "--without_cmake" ]]; then
   exit 1
 fi
 
+if [[ "$ubuntu_version" == "18" ]]; then
+  # 18.04 needs dirmngr for the apt-key adv command
+  apt-get install -y --no-install-recommends dirmngr
+fi
+
 # Install dependencies from ubuntu deb repository.
 apt-key adv --keyserver keyserver.ubuntu.com --recv 084ECFC5828AB726
 apt-get update
