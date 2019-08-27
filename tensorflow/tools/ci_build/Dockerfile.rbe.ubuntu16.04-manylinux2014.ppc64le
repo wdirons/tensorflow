@@ -55,8 +55,7 @@ env PATH=$GOROOT/bin:$PATH
 # Install python 3.6.
 # Replace easy_install3 (3.5) with easy_install-3.6 because in the next
 #   step that is used to install pip
-RUN apt-get update && apt-get install -y zlib1g-dev && \
-    wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz && \
+RUN wget https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz && \
     tar xvf Python-3.6.8.tar.xz && \
     cd Python-3.6.8 && \
     ./configure --enable-optimizations && \

@@ -20,8 +20,10 @@ USE_OPENMP="USE_OPENMP=1"
 OPENBLAS_INSTALL_PATH="/usr"
 apt-get update
 apt-get install -y gfortran gfortran-5
+apt-get clean
+rm -rf /var/lib/apt/lists/*
 rm -rf ${OPENBLAS_SRC_PATH}
-git clone -b v0.3.5 https://github.com/xianyi/OpenBLAS ${OPENBLAS_SRC_PATH}
+git clone -b v0.3.7 https://github.com/xianyi/OpenBLAS ${OPENBLAS_SRC_PATH}
 cd ${OPENBLAS_SRC_PATH}
 make TARGET=${POWER} ${USE_OPENMP} FC=gfortran
 make PREFIX=${OPENBLAS_INSTALL_PATH} install
