@@ -25,7 +25,7 @@ cd openssl-1.1.1c
 make
 make install
 
-apt-get install libffi-dev
+apt update;apt-get install libffi-dev
 wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tar.xz
 tar xvf Python-3.7.4.tar.xz
 cd Python-3.7.4

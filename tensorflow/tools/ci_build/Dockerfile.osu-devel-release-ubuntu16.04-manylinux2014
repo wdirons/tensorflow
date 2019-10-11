@@ -1,4 +1,4 @@
-FROM tensorflowppc64le/tensorflow-ppc64le:devel-ubuntu16.04-manylinux2014
+FROM registry-1.docker.io/tensorflowppc64le/tensorflow-ppc64le:devel-ubuntu16.04-manylinux2014
 COPY install/*.sh /install/
 RUN /install/install_python3.5_pip_packages.sh
 RUN /install/install_python3.7_pip_packages.sh

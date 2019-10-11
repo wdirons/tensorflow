@@ -13,85 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+
 # Install packages required by Python3.5 build
-
-# TODO(cais): Remove this file once we upgrade to ubuntu:16.04 docker images for
-# Python 3.5 builds.
-
-# LINT.IfChange
-
-# fkrull/deadsnakes is for Python3.5
-add-apt-repository -y ppa:fkrull/deadsnakes
-apt-get update
-
 set -e
+
 # Install Python 3.5 and dev library
-apt-get install -y --no-install-recommends python3.5 libpython3.5-dev
 
-# Install pip3.5
-set +e
-pip35_version=$(pip3.5 --version | grep "python 3.5")
-if [[ -z $pip35_version ]]; then
-  set -e
-  wget -q https://bootstrap.pypa.io/get-pip.py
-  python3.5 get-pip.py
-  rm -f get-pip.py
-fi
+wget https://www.openssl.org/source/openssl-1.1.1b.tar.gz
+tar xzf openssl-1.1.1b.tar.gz
+cd openssl-1.1.1b
+./config shared --prefix=/usr/local/
+make
+make install
 
-set -e
+apt update;apt-get install libffi-dev
+wget https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz
+tar xvf Python-3.5.6.tgz
+cd Python-3.5.6
+export LDFLAGS="-L/usr/local/lib/"
+export LD_LIBRARY_PATH="/usr/local/lib/"
+export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl"
+./configure
+make altinstall
+
 pip3.5 install --upgrade pip
 
 # Install last working version of setuptools. This must happen before we install
 # absl-py, which uses install_requires notation introduced in setuptools 20.5.
+pip3.5 install wheel==0.31.1
 pip3.5 install --upgrade setuptools==39.1.0
-
-pip3.5 install --upgrade virtualenv
-
-# Install six.
-pip3.5 install --upgrade absl-py
-pip3.5 install --upgrade six==1.10.0
-
-# Install protobuf.
-pip3.5 install --upgrade protobuf==3.6.1
-
-# Remove obsolete version of six, which can sometimes confuse virtualenv.
-rm -rf /usr/lib/python3/dist-packages/six*
-
-# Install numpy, scipy and scikit-learn required by the builds
-
-# numpy needs to be installed from source to fix segfaults. See:
-# https://github.com/tensorflow/tensorflow/issues/6968
-# This workaround isn't needed for Ubuntu 16.04 or later.
-pip3.5 install --no-binary=:all: --upgrade numpy==1.14.5
-
-pip3.5 install scipy==0.18.1
-
-pip3.5 install scikit-learn==0.19.1
-
-# pandas required by `inflow`
-pip3 install pandas==0.19.2
-
-# Install recent-enough version of wheel for Python 3.5 wheel builds
-pip3.5 install wheel==0.29.0
-
-pip3.5 install portpicker
-
-pip3.5 install werkzeug
-
-pip3.5 install grpcio
-
-# Eager-to-graph execution needs astor, gast and termcolor:
-pip3.5 install --upgrade astor
-pip3.5 install --upgrade gast
-pip3.5 install --upgrade termcolor
-
-# Keras
-pip3.5 install cython
-pip3.5 install keras_applications==1.0.8
+pip3.5 install --upgrade numpy==1.14.5
+pip3.5 install keras_applications==1.0.6
 pip3.5 install keras_preprocessing==1.0.5
-pip3.5 install --upgrade h5py==2.8.0
-
-# Estimator
-pip3.5 install tf-estimator-nightly==1.12.0.dev20181203 --no-deps
-
-# LINT.ThenChange(//tensorflow/tools/ci_build/install/install_python3.6_pip_packages.sh)
