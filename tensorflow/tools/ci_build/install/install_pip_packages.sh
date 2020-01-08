@@ -35,6 +35,8 @@ pip3 install wheel==0.31.1
 pip2 install --upgrade setuptools==40.8.0
 pip3 install --upgrade setuptools==40.8.0
 
+pip3 install pybind11 #need to compile scipy from source 
+
 pip2 install virtualenv
 pip3 install virtualenv
 
