@@ -19,17 +19,17 @@ set -e
 
 # Install Python 3.5 and dev library
 
-wget https://www.openssl.org/source/openssl-1.1.1b.tar.gz
-tar xzf openssl-1.1.1b.tar.gz
-cd openssl-1.1.1b
+wget https://www.openssl.org/source/openssl-1.1.1d.tar.gz
+tar xzf openssl-1.1.1d.tar.gz
+cd openssl-1.1.1d
 ./config shared --prefix=/usr/local/
 make
 make install
 
 apt update;apt-get install libffi-dev
-wget https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz
-tar xvf Python-3.5.6.tgz
-cd Python-3.5.6
+wget https://www.python.org/ftp/python/3.5.9/Python-3.5.9.tgz
+tar xvf Python-3.5.9.tgz
+cd Python-3.5.9
 export LDFLAGS="-L/usr/local/lib/"
 export LD_LIBRARY_PATH="/usr/local/lib/"
 export CPPFLAGS="-I/usr/local/include -I/usr/local/include/openssl"
@@ -43,5 +43,4 @@ pip3.5 install --upgrade pip
 pip3.5 install wheel==0.31.1
 pip3.5 install --upgrade setuptools==39.1.0
 pip3.5 install --upgrade numpy==1.14.5
-pip3.5 install keras_applications==1.0.6
 pip3.5 install keras_preprocessing==1.0.5
